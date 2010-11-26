@@ -102,6 +102,47 @@ class HandTest < Test::Unit::TestCase
     assert_equal 0, Game::HighCard.new([]).rank
     assert_equal 1, Game::Pair.new([]).rank
     assert_equal 2, Game::TwoPair.new([]).rank
+    assert_equal 3, Game::ThreeOfAKind.new([]).rank
+  end
+
+  def test_three_of_a_kind_should_beat_inferior_hands
+    trip_hand = trip_hand_from("2 Spades", "2 Hearts", "2 Clubs", 
+                           "7 Clubs", "J Spades") 
+    pair  = pair_hand_from("9 Spades", "9 Hearts", "5 Clubs",
+                                "A Diamonds", "K Diamonds")
+    two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "6 Spades",
+                                   "A Spades", "Q Hearts")
+    high_card_hand = high_card_hand_from("3 Spades", "2 Hearts", "5 Clubs",
+                                "A Diamonds", "K Diamonds")
+
+    assert trip_hand > high_card_hand
+    assert trip_hand > pair 
+    assert !(pair > trip_hand) 
+    assert trip_hand > two_pair
+  end
+
+  def test_three_of_a_kind_against_other_trips
+    trip_hand = trip_hand_from("2 Spades", "2 Hearts", "2 Clubs", 
+                           "10 Clubs", "6 Spades") 
+    better_trip_hand = trip_hand_from("8 Spades", "8 Hearts", "8 Clubs", 
+                           "7 Clubs", "J Spades") 
+    
+    assert better_trip_hand > trip_hand
+    trip_hand = trip_hand_from("K Spades", "K Hearts", "K Clubs", 
+                           "7 Clubs", "J Spades") 
+    better_trip_hand = trip_hand_from("A Spades", "A Hearts", "A Clubs", 
+                           "2 Clubs", "4 Spades") 
+    
+    assert !(trip_hand > better_trip_hand)
+  end
+
+  def test_three_of_a_kind_win_by_high_card
+    trip_hand = trip_hand_from("K Spades", "K Hearts", "K Clubs", 
+                           "7 Clubs", "J Spades") 
+    better_trip_hand = trip_hand_from("K Spades", "K Hearts", "K Clubs", 
+                           "2 Clubs", "A Spades") 
+    
+    assert better_trip_hand > trip_hand
   end
 
   def test_pair_should_beat_high_card
@@ -129,9 +170,9 @@ class HandTest < Test::Unit::TestCase
 
   def test_two_pair_against_other_two_pair
     losing_two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "6 Spades",
-                                   "A Spades", "Q Hearts")
+                                   "A Spades", "A Hearts")
     better_two_pair = two_pair_hand_from("J Spades", "J Clubs", "7 Spades",
-                                   "9 Diamonds", "9 Hearts")
+                                   "A Diamonds", "A Clubs")
     assert better_two_pair > losing_two_pair
 
     losing_two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "6 Spades",
@@ -139,6 +180,20 @@ class HandTest < Test::Unit::TestCase
     better_two_pair = two_pair_hand_from("J Spades", "J Clubs", "7 Spades",
                                    "9 Diamonds", "9 Hearts")
     assert !(losing_two_pair > better_two_pair)
+
+    better_two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "6 Spades",
+                                   "A Spades", "A Hearts")
+    losingtwo_pair = two_pair_hand_from("8 Spades", "8 Clubs", "7 Spades",
+                                   "Q Diamonds", "Q Clubs")
+    assert better_two_pair > losing_two_pair
+  end
+
+  def test_two_pair_win_by_high_card
+    losing_two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "6 Spades",
+                                   "A Spades", "A Hearts")
+    better_two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "10 Spades",
+                                   "A Diamonds", "A Clubs")
+    assert better_two_pair > losing_two_pair
   end
 
   def test_pair_should_beat_lower_pair
@@ -148,6 +203,15 @@ class HandTest < Test::Unit::TestCase
                                 "A Diamonds", "K Diamonds")
     assert !(pair > higher_pair) 
     assert higher_pair > pair 
+  end
+
+  def test_pair_win_by_high_card
+    lower_pair  = pair_hand_from("J Spades", "J Hearts", "5 Clubs",
+                                "A Diamonds", "Q Diamonds")
+    higher_pair = pair_hand_from("J Spades", "J Hearts", "5 Clubs",
+                                "A Diamonds", "K Diamonds")
+    assert higher_pair > lower_pair
+
   end
 
   def test_should_define_greater_than_on_high_card
@@ -164,6 +228,10 @@ class HandTest < Test::Unit::TestCase
    first_hand = high_card_hand_from("10 Hearts", "J Hearts", "2 Clubs", 
                        "4 Spades", "8 Diamonds")
    assert second_hand > first_hand
+
+   second_hand = high_card_hand_from("10 Hearts", "J Hearts", "2 Clubs", 
+                       "4 Spades", "9 Diamonds")
+   assert second_hand > first_hand
   end
 
 
@@ -179,6 +247,10 @@ class HandTest < Test::Unit::TestCase
   def pair_hand_from(*cards)
     cards = create_cards(*cards)
     Game::Pair.new(cards)
+  end
+  def trip_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::ThreeOfAKind.new(cards)
   end
 
   def create_cards(*cards)

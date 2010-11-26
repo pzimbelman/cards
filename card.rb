@@ -81,9 +81,9 @@ module Game
   end
 
   class Hand
-    attr_reader :rank
+    attr_reader :rank, :cards
     def initialize(cards)
-      @cards = cards.sort
+      @cards = cards.sort { |a,b| b <=> a }
     end
 
     def self.best_possible(cards)
@@ -91,7 +91,7 @@ module Game
     end
 
     def high_card
-      @cards.last
+      @cards.first
     end
   
     protected
@@ -99,16 +99,25 @@ module Game
       self.rank > opponent.rank 
     end
 
-    def paired_cards
-      paired_cards = []
+    def wins_by_high_card?(opponent)
+      @cards.size.times do |index|
+        if @cards[index] != opponent.cards[index]
+          return @cards[index] > opponent.cards[index]
+        end
+      end
+      false
+    end
+
+    def duplicate_cards_of_count(count=2)
+      duplicate_cards_of_count = []
       pairs = Hash.new(0)
       @cards.each do |card|
         pairs[card.rank] += 1 
-        if pairs[card.rank] > 1
-          paired_cards << card
+        if pairs[card.rank] == 2
+          duplicate_cards_of_count << card
         end
       end
-      paired_cards
+      duplicate_cards_of_count
     end
   end
 
@@ -120,7 +129,7 @@ module Game
 
     def >(opponent)
       if self.rank == opponent.rank
-        return self.high_card > opponent.high_card
+        return wins_by_high_card?(opponent) 
       end
       self.beats?(opponent)
     end
@@ -134,9 +143,19 @@ module Game
 
     def >(opponent)
       if self.rank == opponent.rank
-       return paired_cards.first > opponent.paired_cards.first
+        return compare_pairs(opponent)
       end
       self.beats?(opponent)
+    end
+
+    private
+    def compare_pairs(opponent)
+       my_pairs =  duplicate_cards_of_count
+       opponents_pairs = opponent.duplicate_cards_of_count 
+       if my_pairs.first == opponents_pairs.first
+         return wins_by_high_card?(opponent)
+       end
+       return my_pairs.first > opponents_pairs.first
     end
 
   end
@@ -157,12 +176,38 @@ module Game
 
     private
     def compare_pairs_against(opponent)
-      my_pairs = paired_cards
-      opponents_pairs = opponent.paired_cards
-      if my_pairs.last == opponents_pairs.last
-        return my_pairs.first > opponents_pairs.first
+      my_pairs = duplicate_cards_of_count
+      opponents_pairs = opponent.duplicate_cards_of_count
+      if my_pairs.first == opponents_pairs.first
+        if my_pairs.last == opponents_pairs.last
+          return wins_by_high_card?(opponent)
+        end
+        return my_pairs.last > opponents_pairs.last
       end
-      return my_pairs.last > opponents_pairs.last
+      return my_pairs.first > opponents_pairs.first
     end
   end
-end
+
+  class ThreeOfAKind < Hand
+    def initialize(cards)
+      @rank = 3
+      super
+    end
+
+    def >(opponent)
+      if self.rank == opponent.rank
+        return compare_trips(opponent)
+      end
+      self.beats?(opponent)
+    end
+
+    def compare_trips(opponent)
+      my_pairs = duplicate_cards_of_count(3)
+      opponents_pairs = opponent.duplicate_cards_of_count(3)
+       if my_pairs.first == opponents_pairs.first
+         return wins_by_high_card?(opponent)
+       end
+      return my_pairs.first > opponents_pairs.first
+    end
+  end
+end 
