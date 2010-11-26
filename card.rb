@@ -99,6 +99,13 @@ module Game
       self.rank > opponent.rank 
     end
 
+    def determine_winner_by(opponent)
+      if self.rank == opponent.rank
+        return yield 
+      end
+      self.beats?(opponent)
+    end
+
     def wins_by_high_card?(opponent)
       @cards.size.times do |index|
         if @cards[index] != opponent.cards[index]
@@ -128,10 +135,7 @@ module Game
     end
 
     def >(opponent)
-      if self.rank == opponent.rank
-        return wins_by_high_card?(opponent) 
-      end
-      self.beats?(opponent)
+      determine_winner_by(opponent) { wins_by_high_card?(opponent) }
     end
   end
 
@@ -142,10 +146,7 @@ module Game
     end
 
     def >(opponent)
-      if self.rank == opponent.rank
-        return compare_pairs(opponent)
-      end
-      self.beats?(opponent)
+      determine_winner_by(opponent) { compare_pairs(opponent) }
     end
 
     private
@@ -168,14 +169,11 @@ module Game
     end
 
     def >(opponent)
-      if self.rank == opponent.rank
-        return compare_pairs_against(opponent)
-      end
-      self.beats?(opponent)
+      determine_winner_by(opponent) { compare_pairs(opponent) }
     end
 
     private
-    def compare_pairs_against(opponent)
+    def compare_pairs(opponent)
       my_pairs = duplicate_cards_of_count
       opponents_pairs = opponent.duplicate_cards_of_count
       if my_pairs.first == opponents_pairs.first
@@ -195,10 +193,7 @@ module Game
     end
 
     def >(opponent)
-      if self.rank == opponent.rank
-        return compare_trips(opponent)
-      end
-      self.beats?(opponent)
+      determine_winner_by(opponent) { compare_trips(opponent) }
     end
 
     def compare_trips(opponent)
