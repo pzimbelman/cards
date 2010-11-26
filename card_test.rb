@@ -128,11 +128,17 @@ class HandTest < Test::Unit::TestCase
   end
 
   def test_two_pair_against_other_two_pair
-    two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "6 Spades",
+    losing_two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "6 Spades",
                                    "A Spades", "Q Hearts")
     better_two_pair = two_pair_hand_from("J Spades", "J Clubs", "7 Spades",
                                    "9 Diamonds", "9 Hearts")
-    assert better_two_pair > two_pair
+    assert better_two_pair > losing_two_pair
+
+    losing_two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "6 Spades",
+                                   "2 Spades", "2 Hearts")
+    better_two_pair = two_pair_hand_from("J Spades", "J Clubs", "7 Spades",
+                                   "9 Diamonds", "9 Hearts")
+    assert !(losing_two_pair > better_two_pair)
   end
 
   def test_pair_should_beat_lower_pair
@@ -159,6 +165,7 @@ class HandTest < Test::Unit::TestCase
                        "4 Spades", "8 Diamonds")
    assert second_hand > first_hand
   end
+
 
   def two_pair_hand_from(*cards)
     cards = create_cards(*cards)

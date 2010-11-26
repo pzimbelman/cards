@@ -145,7 +145,7 @@ module Game
 
     def initialize(cards)
       @rank = 2
-      @cards = cards
+      super
     end
 
     def >(opponent)
@@ -155,6 +155,7 @@ module Game
       self.beats?(opponent)
     end
 
+    private
     def compare_pairs_against(opponent)
       my_pairs = paired_cards
       opponents_pairs = opponent.paired_cards
