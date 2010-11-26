@@ -99,7 +99,7 @@ module Game
       self.rank > opponent.rank 
     end
 
-    def determine_winner_by(opponent)
+    def determine_winner(opponent)
       if self.rank == opponent.rank
         return yield 
       end
@@ -135,7 +135,7 @@ module Game
     end
 
     def >(opponent)
-      determine_winner_by(opponent) { wins_by_high_card?(opponent) }
+      determine_winner(opponent) { wins_by_high_card?(opponent) }
     end
   end
 
@@ -146,7 +146,7 @@ module Game
     end
 
     def >(opponent)
-      determine_winner_by(opponent) { compare_pairs(opponent) }
+      determine_winner(opponent) { compare_pairs(opponent) }
     end
 
     private
@@ -169,7 +169,7 @@ module Game
     end
 
     def >(opponent)
-      determine_winner_by(opponent) { compare_pairs(opponent) }
+      determine_winner(opponent) { compare_pairs(opponent) }
     end
 
     private
@@ -193,7 +193,7 @@ module Game
     end
 
     def >(opponent)
-      determine_winner_by(opponent) { compare_trips(opponent) }
+      determine_winner(opponent) { compare_trips(opponent) }
     end
 
     def compare_trips(opponent)
