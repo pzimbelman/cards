@@ -120,9 +120,7 @@ module Game
       pairs = Hash.new(0)
       @cards.each do |card|
         pairs[card.rank] += 1 
-        if pairs[card.rank] == 2
-          duplicate_cards_of_count << card
-        end
+        duplicate_cards_of_count << card if pairs[card.rank] == count
       end
       duplicate_cards_of_count
     end
@@ -196,6 +194,7 @@ module Game
       determine_winner(opponent) { compare_trips(opponent) }
     end
 
+    private
     def compare_trips(opponent)
       my_pairs = duplicate_cards_of_count(3)
       opponents_pairs = opponent.duplicate_cards_of_count(3)
@@ -204,5 +203,17 @@ module Game
        end
       return my_pairs.first > opponents_pairs.first
     end
+  end
+
+  class Straight < Hand
+
+  def initialize(cards)
+    @rank = 4
+    super
+  end
+
+  def >(opponent)
+    determine_winner(opponent)
+  end
   end
 end 
