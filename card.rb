@@ -231,4 +231,15 @@ module Game
       return self.high_card > opponent.high_card
     end
   end
+
+  class Flush < Hand
+    def initialize(cards)
+      @rank = 5
+      super
+    end
+
+    def >(opponent)
+      determine_winner(opponent) { high_card > opponent.high_card }
+    end
+  end
 end 

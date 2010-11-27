@@ -102,22 +102,39 @@ class HandTest < Test::Unit::TestCase
                                 "A Diamonds", "K Diamonds")
     @straight = straight_hand_from("5 Spades", "6 Clubs", "7 Clubs", 
                                    "8 Hearts", "9 Clubs")
+    @flush = flush_hand_from("K Clubs", "6 Clubs", "7 Clubs", 
+                                   "8 Clubs", "9 Clubs")
   end
 
-  def test_should_create_high_card
-   cards = create_cards("A Hearts", "J Hearts", "2 Clubs", 
-                       "4 Spades", "8 Diamonds")
-   hand = Game::Hand.best_possible(cards)
-   assert_equal Game::HighCard, hand.class 
-   assert_equal "A Hearts", hand.high_card.to_s
+  def test_should_define_high_card
+    assert_equal "A Diamonds", @high_card.high_card.to_s
+    assert_equal "J Spades", @trips.high_card.to_s
   end
 
   def test_should_define_ranks_for_hands
-    assert_equal 0, Game::HighCard.new([]).rank
-    assert_equal 1, Game::Pair.new([]).rank
-    assert_equal 2, Game::TwoPair.new([]).rank
-    assert_equal 3, Game::ThreeOfAKind.new([]).rank
-    assert_equal 4, Game::Straight.new([]).rank
+    assert_equal 0, @high_card.rank
+    assert_equal 1, @pair.rank
+    assert_equal 2, @two_pair.rank
+    assert_equal 3, @trips.rank
+    assert_equal 4, @straight.rank
+    assert_equal 5, @flush.rank
+  end
+
+  def test_flush_should_beat_inferior_hands
+    assert @flush > @high_card
+    assert @flush > @pair
+    assert @flush > @two_pair
+    assert @flush > @trips
+    assert @flush > @straight
+  end
+
+  def test_flush_against_other_flush
+    losing_flush = flush_hand_from("6 Clubs", "7 Clubs", "2 Clubs",
+                                         "9 Clubs", "J Clubs")
+    better_flush = flush_hand_from("6 Clubs", "7 Clubs", "2 Clubs",
+                                         "9 Clubs", "A Clubs")
+    assert better_flush > losing_flush
+    assert !(losing_flush > better_flush)
   end
 
   def test_straight_should_beat_inferior_hands
@@ -125,6 +142,7 @@ class HandTest < Test::Unit::TestCase
     assert @straight > @pair
     assert @straight > @two_pair
     assert @straight > @trips
+    assert !(@straight > @flush)
   end
 
   def test_straight_against_other_straight
@@ -270,15 +288,21 @@ class HandTest < Test::Unit::TestCase
     cards = create_cards(*cards)
     Game::Pair.new(cards)
   end
+
   def trip_hand_from(*cards)
     cards = create_cards(*cards)
     Game::ThreeOfAKind.new(cards)
   end
+
   def straight_hand_from(*cards)
     cards = create_cards(*cards)
     Game::Straight.new(cards)
   end
 
+  def flush_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::Flush.new(cards)
+  end
   def create_cards(*cards)
     hand = []
     cards.each do |c| 
