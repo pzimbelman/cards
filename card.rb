@@ -206,14 +206,29 @@ module Game
   end
 
   class Straight < Hand
+    def initialize(cards)
+      @rank = 4
+      super
+    end
 
-  def initialize(cards)
-    @rank = 4
-    super
-  end
+    def >(opponent)
+      determine_winner(opponent) { compare_straights(opponent) } 
+    end
+    protected
+    def is_ace_to_five?
+      if high_card.rank == "A" && @cards[1].rank == 5
+        return true
+      end
+    end
 
-  def >(opponent)
-    determine_winner(opponent)
-  end
+    private
+    def compare_straights(opponent)
+      if is_ace_to_five?
+        return false
+      elsif opponent.is_ace_to_five?
+        return true
+      end
+      return self.high_card > opponent.high_card
+    end
   end
 end 

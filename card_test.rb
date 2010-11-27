@@ -127,6 +127,24 @@ class HandTest < Test::Unit::TestCase
     assert @straight > @trips
   end
 
+  def test_straight_against_other_straight
+    losing_straight = straight_hand_from("6 Clubs", "7 Clubs", "8 Hearts",
+                                         "9 Spades", "10 Spades")
+    better_straight = straight_hand_from("8 Hearts", "9 Spades", "10 Spades",
+                                         "J Diamonds", "Q Clubs")
+    assert better_straight > losing_straight
+    assert !(losing_straight > better_straight)
+  end
+
+  def test_A_to_5_straight_against_other_straight
+    losing_straight = straight_hand_from("A Clubs", "2 Clubs", "3 Hearts",
+                                         "4 Spades", "5 Spades")
+    better_straight = straight_hand_from("2 Hearts", "3 Spades", "4 Spades",
+                                         "5 Diamonds", "6 Clubs")
+    assert better_straight > losing_straight
+    assert !(losing_straight > better_straight)
+  end
+
   def test_three_of_a_kind_should_beat_inferior_hands
     assert @trips > @high_card
     assert @trips > @pair 
