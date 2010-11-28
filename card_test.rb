@@ -104,6 +104,8 @@ class HandTest < Test::Unit::TestCase
                                    "8 Hearts", "9 Clubs")
     @flush = flush_hand_from("K Clubs", "6 Clubs", "7 Clubs", 
                                    "8 Clubs", "9 Clubs")
+    @full_house = full_house_hand_from("K Clubs", "K Hearts", "K Spades", 
+                                   "9 Diamonds", "9 Clubs")
   end
 
   def test_should_define_high_card
@@ -118,6 +120,15 @@ class HandTest < Test::Unit::TestCase
     assert_equal 3, @trips.rank
     assert_equal 4, @straight.rank
     assert_equal 5, @flush.rank
+    assert_equal 6, @full_house.rank
+  end
+
+  def test_full_house_should_beat_inferior_hands
+    assert @full_house > @high_card
+    assert @full_house > @pair
+    assert @full_house > @two_pair
+    assert @full_house > @trips
+    assert @full_house > @straight
   end
 
   def test_flush_should_beat_inferior_hands
@@ -126,6 +137,25 @@ class HandTest < Test::Unit::TestCase
     assert @flush > @two_pair
     assert @flush > @trips
     assert @flush > @straight
+    assert !(@flush > @full_house)
+  end
+
+  def test_full_house_against_other_full_house
+    losing_full_house = full_house_hand_from("Q Clubs", "Q Spades", "Q Hearts",
+                                         "J Diamonds", "J Clubs")
+    better_full_house = full_house_hand_from("A Clubs", "A Spades", 
+                                      "A Hearts", "J Diamonds", "J Clubs")
+    assert better_full_house > losing_full_house
+    assert !(losing_full_house > better_full_house)
+  end
+
+  def test_full_house_against_other_full_house_down_to_pair
+    losing_full_house = full_house_hand_from("Q Clubs", "Q Spades", "Q Hearts",
+                                         "8 Diamonds", "8 Clubs")
+    better_full_house = full_house_hand_from("Q Clubs", "Q Spades", 
+                                      "Q Hearts", "J Diamonds", "J Clubs")
+    assert better_full_house > losing_full_house
+    assert !(losing_full_house > better_full_house)
   end
 
   def test_flush_against_other_flush
@@ -302,6 +332,10 @@ class HandTest < Test::Unit::TestCase
   def flush_hand_from(*cards)
     cards = create_cards(*cards)
     Game::Flush.new(cards)
+  end
+  def full_house_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::FullHouse.new(cards)
   end
   def create_cards(*cards)
     hand = []

@@ -121,6 +121,9 @@ module Game
       @cards.each do |card|
         pairs[card.rank] += 1 
         duplicate_cards_of_count << card if pairs[card.rank] == count
+        if pairs[card.rank] > count
+          duplicate_cards_of_count.delete_if { |c| c== card }
+        end
       end
       duplicate_cards_of_count
     end
@@ -240,6 +243,30 @@ module Game
 
     def >(opponent)
       determine_winner(opponent) { high_card > opponent.high_card }
+    end
+  end
+
+  class FullHouse < Hand
+
+    def initialize(cards)
+      @rank = 6
+      super
+    end
+
+    def >(opponent)
+      determine_winner(opponent) { compare_boats(opponent) }
+    end
+
+    def compare_boats(opponent)
+      my_trips = duplicate_cards_of_count(3)
+      opponent_trips = opponent.duplicate_cards_of_count(3)
+      if my_trips.first == opponent_trips.first 
+        my_pair = duplicate_cards_of_count
+        opponents_pair = opponent.duplicate_cards_of_count
+        return my_pair.first > opponents_pair.first
+      else
+        return my_trips.first > opponent_trips.first
+      end
     end
   end
 end 
