@@ -231,7 +231,7 @@ module Game
     end
 
     def compare_same_rank(opponent)
-       high_card > opponent.high_card 
+      wins_by_high_card?(opponent) 
     end
   end
 

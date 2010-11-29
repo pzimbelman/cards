@@ -194,6 +194,15 @@ class HandTest < Test::Unit::TestCase
     assert !(losing_flush > better_flush)
   end
 
+  def test_flush_against_other_flush_compare_several_cards
+    losing_flush = flush_hand_from("5 Clubs", "7 Clubs", "2 Clubs",
+                                         "9 Clubs", "A Clubs")
+    better_flush = flush_hand_from("6 Clubs", "7 Clubs", "2 Clubs",
+                                         "9 Clubs", "A Clubs")
+    assert better_flush > losing_flush
+    assert !(losing_flush > better_flush)
+  end
+
   def test_straight_should_beat_inferior_hands
     assert @straight > @high_card
     assert @straight > @pair
