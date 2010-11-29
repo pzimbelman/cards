@@ -93,6 +93,10 @@ module Game
     def high_card
       @cards.first
     end
+
+    def >(opponent)
+      determine_winner(opponent) { compare_same_rank(opponent) }
+    end
   
     protected
     def beats?(opponent)
@@ -135,8 +139,8 @@ module Game
       super
     end
 
-    def >(opponent)
-      determine_winner(opponent) { wins_by_high_card?(opponent) }
+    def compare_same_rank(opponent)
+      wins_by_high_card?(opponent)
     end
   end
 
@@ -146,12 +150,8 @@ module Game
       super
     end
 
-    def >(opponent)
-      determine_winner(opponent) { compare_pairs(opponent) }
-    end
-
     private
-    def compare_pairs(opponent)
+    def compare_same_rank(opponent)
        my_pairs =  duplicate_cards_of_count
        opponents_pairs = opponent.duplicate_cards_of_count 
        if my_pairs.first == opponents_pairs.first
@@ -169,12 +169,8 @@ module Game
       super
     end
 
-    def >(opponent)
-      determine_winner(opponent) { compare_pairs(opponent) }
-    end
-
     private
-    def compare_pairs(opponent)
+    def compare_same_rank(opponent)
       my_pairs = duplicate_cards_of_count
       opponents_pairs = opponent.duplicate_cards_of_count
       if my_pairs.first == opponents_pairs.first
@@ -193,12 +189,8 @@ module Game
       super
     end
 
-    def >(opponent)
-      determine_winner(opponent) { compare_trips(opponent) }
-    end
-
     private
-    def compare_trips(opponent)
+    def compare_same_rank(opponent)
       my_pairs = duplicate_cards_of_count(3)
       opponents_pairs = opponent.duplicate_cards_of_count(3)
        if my_pairs.first == opponents_pairs.first
@@ -214,9 +206,6 @@ module Game
       super
     end
 
-    def >(opponent)
-      determine_winner(opponent) { compare_straights(opponent) } 
-    end
     protected
     def is_ace_to_five?
       if high_card.rank == "A" && @cards[1].rank == 5
@@ -225,7 +214,7 @@ module Game
     end
 
     private
-    def compare_straights(opponent)
+    def compare_same_rank(opponent)
       if is_ace_to_five?
         return false
       elsif opponent.is_ace_to_five?
@@ -241,8 +230,8 @@ module Game
       super
     end
 
-    def >(opponent)
-      determine_winner(opponent) { high_card > opponent.high_card }
+    def compare_same_rank(opponent)
+       high_card > opponent.high_card 
     end
   end
 
@@ -253,11 +242,8 @@ module Game
       super
     end
 
-    def >(opponent)
-      determine_winner(opponent) { compare_boats(opponent) }
-    end
-
-    def compare_boats(opponent)
+    private
+    def compare_same_rank(opponent)
       my_trips = duplicate_cards_of_count(3)
       opponent_trips = opponent.duplicate_cards_of_count(3)
       if my_trips.first == opponent_trips.first 
@@ -269,4 +255,22 @@ module Game
       end
     end
   end
+
+  class FourOfAKind < Hand
+    def initialize(cards)
+      @rank = 7
+      super
+    end
+
+    private
+    def compare_same_rank(opponent)
+      my_quads = duplicate_cards_of_count(4).first
+      opponent_quads = opponent.duplicate_cards_of_count(4).first
+      if my_quads == opponent_quads 
+        return wins_by_high_card?(opponent) 
+      end
+      return my_quads > opponent_quads
+    end
+  end
+
 end 

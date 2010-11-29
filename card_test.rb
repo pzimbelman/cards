@@ -106,6 +106,8 @@ class HandTest < Test::Unit::TestCase
                                    "8 Clubs", "9 Clubs")
     @full_house = full_house_hand_from("K Clubs", "K Hearts", "K Spades", 
                                    "9 Diamonds", "9 Clubs")
+    @four_of_a_kind = quads_hand_from("K Clubs", "K Hearts", "K Spades", 
+                                   "K Diamonds", "9 Clubs")
   end
 
   def test_should_define_high_card
@@ -121,14 +123,39 @@ class HandTest < Test::Unit::TestCase
     assert_equal 4, @straight.rank
     assert_equal 5, @flush.rank
     assert_equal 6, @full_house.rank
+    assert_equal 7, @four_of_a_kind.rank
   end
 
+
+  def test_four_of_a_kind_should_beat_inferior_hands
+    assert @four_of_a_kind > @trips
+    assert @four_of_a_kind > @straight
+    assert @four_of_a_kind> @full_house
+  end
+
+
+  def test_quads_against_other_quads
+    losing_quads = quads_hand_from("8 Clubs", "8 Hearts", "8 Spades", 
+                                   "8 Diamonds", "9 Clubs")
+    winning_quads = quads_hand_from("K Clubs", "K Hearts", "K Spades", 
+                                   "K Diamonds", "9 Clubs")
+    assert winning_quads > losing_quads
+  end
+
+  def test_quads_against_other_quads_win_by_high_card
+    losing_quads = quads_hand_from("K Clubs", "K Hearts", "K Spades", 
+                                   "K Diamonds", "9 Clubs")
+    winning_quads = quads_hand_from("K Clubs", "K Hearts", "K Spades", 
+                                   "K Diamonds", "A Clubs")
+    assert winning_quads > losing_quads
+  end
   def test_full_house_should_beat_inferior_hands
     assert @full_house > @high_card
     assert @full_house > @pair
     assert @full_house > @two_pair
     assert @full_house > @trips
     assert @full_house > @straight
+    assert !(@full_house > @four_of_a_kind)
   end
 
   def test_flush_should_beat_inferior_hands
@@ -336,6 +363,10 @@ class HandTest < Test::Unit::TestCase
   def full_house_hand_from(*cards)
     cards = create_cards(*cards)
     Game::FullHouse.new(cards)
+  end
+  def quads_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::FourOfAKind.new(cards)
   end
   def create_cards(*cards)
     hand = []
