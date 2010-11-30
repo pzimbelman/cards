@@ -108,6 +108,8 @@ class HandTest < Test::Unit::TestCase
                                    "9 Diamonds", "9 Clubs")
     @four_of_a_kind = quads_hand_from("K Clubs", "K Hearts", "K Spades", 
                                    "K Diamonds", "9 Clubs")
+    @straight_flush = straight_flush_from("5 Clubs", "6 Clubs", "7 Clubs", 
+                                   "8 Clubs", "9 Clubs")
   end
 
   def test_should_define_high_card
@@ -124,8 +126,31 @@ class HandTest < Test::Unit::TestCase
     assert_equal 5, @flush.rank
     assert_equal 6, @full_house.rank
     assert_equal 7, @four_of_a_kind.rank
+    assert_equal 8, @straight_flush.rank
   end
 
+  def test_straight_flush_should_beat_inferior_hands
+    assert @straight_flush > @trips
+    assert @straight_flush > @straight
+    assert @straight_flush > @four_of_a_kind
+  end
+
+  def test_A_to_5_straight_flush
+    losing_straight_flush = straight_flush_from("A Clubs", "2 Clubs", "3 Clubs",
+                                         "4 Clubs", "5 Clubs")
+    better_straight_flush = straight_flush_from("2 Clubs", "3 Clubs", "4 Clubs",
+                                         "5 Clubs", "6 Clubs")
+    assert better_straight_flush > losing_straight_flush
+    assert !(losing_straight_flush > better_straight_flush)
+  end
+  def test_straight_flush_against_other_straight_flush
+    losing_straight_flush = straight_flush_from("10 Clubs", "6 Clubs", 
+                                         "7 Clubs", "8 Clubs", "9 Clubs")
+    winning_straight_flush = straight_flush_from("8 Clubs", "9 Clubs", 
+                                         "10 Clubs", "J Clubs", "Q Clubs")
+
+    assert winning_straight_flush > losing_straight_flush 
+  end
 
   def test_four_of_a_kind_should_beat_inferior_hands
     assert @four_of_a_kind > @trips
@@ -376,6 +401,10 @@ class HandTest < Test::Unit::TestCase
   def quads_hand_from(*cards)
     cards = create_cards(*cards)
     Game::FourOfAKind.new(cards)
+  end
+  def straight_flush_from(*cards)
+    cards = create_cards(*cards)
+    Game::StraightFlush.new(cards)
   end
   def create_cards(*cards)
     hand = []

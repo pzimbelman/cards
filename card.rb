@@ -2,6 +2,24 @@ module Game
   RANKS = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
   SUITS = ["Hearts", "Spades", "Diamonds", "Clubs"]
 
+  module StraightComparisons
+    protected
+    def is_ace_to_five?
+      if high_card.rank == "A" && @cards[1].rank == 5
+        return true
+      end
+    end
+
+    private
+    def compare_same_rank(opponent)
+      if is_ace_to_five?
+        return false
+      elsif opponent.is_ace_to_five?
+        return true
+      end
+      return self.high_card > opponent.high_card
+    end
+  end
   class EmptyDeck < RuntimeError
   end
 
@@ -201,26 +219,10 @@ module Game
   end
 
   class Straight < Hand
+    include Game::StraightComparisons
     def initialize(cards)
       @rank = 4
       super
-    end
-
-    protected
-    def is_ace_to_five?
-      if high_card.rank == "A" && @cards[1].rank == 5
-        return true
-      end
-    end
-
-    private
-    def compare_same_rank(opponent)
-      if is_ace_to_five?
-        return false
-      elsif opponent.is_ace_to_five?
-        return true
-      end
-      return self.high_card > opponent.high_card
     end
   end
 
@@ -273,4 +275,11 @@ module Game
     end
   end
 
+  class StraightFlush < Hand
+    include Game::StraightComparisons
+    def initialize(cards)
+      @rank = 8
+      super
+    end
+  end
 end 
