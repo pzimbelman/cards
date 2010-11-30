@@ -1,103 +1,6 @@
+require File.dirname(__FILE__) + '/straight_comparisons.rb'
+
 module Game
-  RANKS = [2, 3, 4, 5, 6, 7, 8, 9, 10, "J", "Q", "K", "A"]
-  SUITS = ["Hearts", "Spades", "Diamonds", "Clubs"]
-
-  module StraightComparisons
-    protected
-    def is_ace_to_five?
-      if high_card.rank == "A" && @cards[1].rank == 5
-        return true
-      end
-    end
-
-    private
-    def compare_same_rank(opponent)
-      if is_ace_to_five?
-        return false
-      elsif opponent.is_ace_to_five?
-        return true
-      end
-      return self.high_card > opponent.high_card
-    end
-  end
-  class EmptyDeck < RuntimeError
-  end
-
-  class Card
-    attr_reader :suit, :rank
-    def initialize(rank, suit)
-      @suit = suit
-      @rank = rank
-    end
-
-    def to_s
-      "#{rank} #{suit}"
-    end
-
-    def ==(opponent)
-      !self.beats?(opponent) && !opponent.beats?(self)
-    end
-
-    def <(opponent)
-      opponent.beats?(self)
-    end
-
-    def >(opponent)
-      self.beats?(opponent)
-    end
-    
-    def <=>(card)
-      if self > card
-        return 1
-      elsif self < card
-        return -1
-      end
-      return 0
-    end
-
-    protected
-    def beats?(opponent)
-      RANKS.find_index(rank) > RANKS.find_index(opponent.rank)
-    end
-  end
-
-
-  class Deck
-    def initialize
-      @cards = {}
-      create_cards
-    end
-
-    def next_card
-     index = rand(self.card_count)
-     card_to_select =  remaining_cards[index]
-     select_card(card_to_select.to_s)
-    end
-
-    def select_card(id)
-      raise EmptyDeck unless card_count > 0
-      @cards.delete(id)
-    end
-
-    def card_count
-      @cards.values.size
-    end
-
-    def remaining_cards
-      @cards.values
-    end
-
-    private
-    def create_cards
-      RANKS.each do |rank|
-        SUITS.each do |suit|
-          card = Card.new(rank, suit)
-          @cards[card.to_s] = card
-        end
-      end
-    end
-  end
-
   class Hand
     attr_reader :rank, :cards
     def initialize(cards)
@@ -282,4 +185,4 @@ module Game
       super
     end
   end
-end 
+end

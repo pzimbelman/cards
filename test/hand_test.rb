@@ -1,93 +1,6 @@
 require 'test/unit'
-require 'card'
-
-class CardTest < Test::Unit::TestCase
-
-  def test_can_create_card
-    card = Game::Card.new(10, "Spades")
-    assert_equal "Spades", card.suit
-    assert_equal 10, card.rank
-  end
-
-  def test_spaceship_operator_on_cards
-    assert_equal 1, Game::Card.new("A", "Clubs") <=> Game::Card.new(2, "Spades")
-    assert_equal 0, Game::Card.new(10, "Clubs") <=> Game::Card.new(10, "Spades")
-    assert_equal -1, Game::Card.new("J", "Clubs") <=> Game::Card.new("Q", "Spades")
-  end
-
-  def test_to_string
-    card = Game::Card.new(10, "Spades")
-    assert_equal "10 Spades", "#{card}"
-  end
-
-  def test_card_equality
-    assert Game::Card.new(2, "Clubs") == Game::Card.new(2, "Clubs")
-    assert !(Game::Card.new("A", "Clubs") == Game::Card.new(10, "Clubs"))
-  end
-
-  def test_card_less_than_comparison
-    assert Game::Card.new(2, "Clubs") < Game::Card.new(3, "Spades")
-    assert Game::Card.new(10, "Clubs") < Game::Card.new("J", "Spades")
-    assert Game::Card.new("J", "Clubs") < Game::Card.new("Q", "Spades")
-    assert Game::Card.new("J", "Clubs") < Game::Card.new("K", "Spades")
-    assert !(Game::Card.new("A", "Spades") < Game::Card.new("J", "Clubs"))
-  end
-
-  def test_card_greater_than_comparison
-    assert Game::Card.new(6, "Clubs") > Game::Card.new(3, "Spades")
-    assert Game::Card.new("A", "Clubs") > Game::Card.new("K", "Spades")
-    assert Game::Card.new("J", "Clubs") > Game::Card.new(10, "Spades")
-    assert Game::Card.new("A", "Clubs") > Game::Card.new("J", "Spades")
-    assert !(Game::Card.new("Q", "Clubs") > Game::Card.new("K", "Spades"))
-  end
-end
-
-
-class DeckTest < Test::Unit::TestCase
-  def setup
-    @deck = Game::Deck.new
-  end
-  def test_can_create_deck
-    assert_equal 52, @deck.card_count
-  end
-
-  def test_select_card
-    card = @deck.select_card("10 Spades")
-    assert_equal 10, card.rank
-    assert_equal "Spades", card.suit
-    assert_equal 51, @deck.card_count
-    
-    card = @deck.select_card("K Hearts")
-    assert_equal "K", card.rank
-    assert_equal "Hearts", card.suit
-    assert_equal 50, @deck.card_count
-  end
-
-  def test_next_card
-    card = @deck.next_card
-    assert card.rank
-    assert card.suit
-  end
-
-  def test_next_card_decrementing
-    51.times { @deck.next_card }
-    assert_equal 1, @deck.card_count
-  end
-
-  def test_should_error_when_out_of_cards_for_next
-    assert_raise Game::EmptyDeck do
-      53.times { @deck.next_card }
-    end
-  end
-
-  def test_should_error_when_out_of_cards_for_select
-    all_cards = @deck.remaining_cards 
-    assert_raise Game::EmptyDeck do
-      all_cards.each { |c| @deck.select_card(c.to_s) }
-      @deck.select_card("foo bar")
-    end
-  end
-end
+require File.dirname(__FILE__) + '/../lib/hand.rb'
+require File.dirname(__FILE__) + '/../lib/card.rb'
 
 class HandTest < Test::Unit::TestCase
 
@@ -416,6 +329,3 @@ class HandTest < Test::Unit::TestCase
     return hand 
   end
 end
-
-
-
