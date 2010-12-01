@@ -48,6 +48,12 @@ class HandTest < Test::Unit::TestCase
     assert @straight_flush > @four_of_a_kind
   end
 
+  def test_should_implement_spaceship_operator
+    assert_equal 0, @trips <=> @trips
+    assert_equal -1, @pair <=> @flush
+    assert_equal 1, @full_house <=> @two_pair 
+  end
+
   def test_A_to_5_straight_flush
     losing_straight_flush = straight_flush_from("A Clubs", "2 Clubs", "3 Clubs",
                                          "4 Clubs", "5 Clubs")
@@ -56,6 +62,7 @@ class HandTest < Test::Unit::TestCase
     assert better_straight_flush > losing_straight_flush
     assert !(losing_straight_flush > better_straight_flush)
   end
+
   def test_straight_flush_against_other_straight_flush
     losing_straight_flush = straight_flush_from("10 Clubs", "6 Clubs", 
                                          "7 Clubs", "8 Clubs", "9 Clubs")
@@ -286,7 +293,7 @@ class HandTest < Test::Unit::TestCase
 
   def high_card_hand_from(*cards)
     cards = create_cards(*cards)
-    Game::HighCard.new(cards)
+    Game::HighCard.create(cards)
   end
   def pair_hand_from(*cards)
     cards = create_cards(*cards)

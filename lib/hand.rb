@@ -18,17 +18,23 @@ module Game
     def >(opponent)
       determine_winner(opponent) { compare_same_rank(opponent) }
     end
+
+    def ==(opponent)
+      self.rank == opponent.rank
+    end
+
+    def <=>(opponent)
+      if self > opponent
+        return 1
+      elsif self == opponent
+        return 0
+      end
+      return -1
+    end
   
     protected
     def beats?(opponent)
       self.rank > opponent.rank 
-    end
-
-    def determine_winner(opponent)
-      if self.rank == opponent.rank
-        return yield 
-      end
-      self.beats?(opponent)
     end
 
     def wins_by_high_card?(opponent)
@@ -52,6 +58,14 @@ module Game
       end
       duplicate_cards_of_count
     end
+
+    private
+    def determine_winner(opponent)
+      if self == opponent
+        return yield 
+      end
+      self.beats?(opponent)
+    end
   end
 
   class HighCard < Hand
@@ -62,6 +76,10 @@ module Game
 
     def compare_same_rank(opponent)
       wins_by_high_card?(opponent)
+    end
+
+    def self.create(cards)
+      self.new(cards)
     end
   end
 
