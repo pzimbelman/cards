@@ -1,9 +1,9 @@
 require 'test/unit'
 require File.dirname(__FILE__) + '/../lib/hand.rb'
-require File.dirname(__FILE__) + '/../lib/card.rb'
+require File.dirname(__FILE__) + '/test_helper.rb'
 
 class HandTest < Test::Unit::TestCase
-
+  include TestHelper
   def setup
     @trips = trip_hand_from("2 Spades", "2 Hearts", "2 Clubs", 
                            "7 Clubs", "J Spades") 
@@ -282,6 +282,14 @@ class HandTest < Test::Unit::TestCase
    assert second_hand > first_hand
   end
 
+  def test_should_give_error_if_not_a_valid_pair_hand
+    cards = create_cards("10 Spades", "3 Hearts", "4 Hearts", 
+                        "J Diamonds", "8 Spades")
+    assert_raise Game::InvalidHand do
+      Game::Pair.create(cards) 
+    end
+  end
+
   def test_high_card_cannot_beat_better_hands
     assert !(@high_card > @pair)
   end
@@ -297,7 +305,7 @@ class HandTest < Test::Unit::TestCase
   end
   def pair_hand_from(*cards)
     cards = create_cards(*cards)
-    Game::Pair.new(cards)
+    Game::Pair.create(cards)
   end
 
   def trip_hand_from(*cards)
@@ -325,14 +333,5 @@ class HandTest < Test::Unit::TestCase
   def straight_flush_from(*cards)
     cards = create_cards(*cards)
     Game::StraightFlush.new(cards)
-  end
-  def create_cards(*cards)
-    hand = []
-    cards.each do |c| 
-       rank, suit = c.split(" ") 
-       rank = rank.to_i if rank < "A"
-       hand << Game::Card.new(rank, suit)
-    end
-    return hand 
   end
 end

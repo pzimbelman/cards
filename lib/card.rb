@@ -13,7 +13,7 @@ module Game
     end
 
     def ==(opponent)
-      !self.beats?(opponent) && !opponent.beats?(self)
+      self.rank == opponent.rank
     end
 
     def <(opponent)
@@ -38,7 +38,4 @@ module Game
       RANKS.find_index(rank) > RANKS.find_index(opponent.rank)
     end
   end
-
-
-
 end 

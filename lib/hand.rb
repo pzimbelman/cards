@@ -1,14 +1,16 @@
 require File.dirname(__FILE__) + '/straight_comparisons.rb'
+require File.dirname(__FILE__) + '/hand_helpers.rb'
 
 module Game
+  class InvalidHand < ArgumentError
+  end
+
   class Hand
+    extend Game::HandHelpers
+    include Game::HandHelpers
     attr_reader :rank, :cards
     def initialize(cards)
       @cards = cards.sort { |a,b| b <=> a }
-    end
-
-    def self.best_possible(cards)
-      return HighCard.new(cards)
     end
 
     def high_card
@@ -46,19 +48,6 @@ module Game
       false
     end
 
-    def duplicate_cards_of_count(count=2)
-      duplicate_cards_of_count = []
-      pairs = Hash.new(0)
-      @cards.each do |card|
-        pairs[card.rank] += 1 
-        duplicate_cards_of_count << card if pairs[card.rank] == count
-        if pairs[card.rank] > count
-          duplicate_cards_of_count.delete_if { |c| c== card }
-        end
-      end
-      duplicate_cards_of_count
-    end
-
     private
     def determine_winner(opponent)
       if self == opponent
@@ -89,10 +78,17 @@ module Game
       super
     end
 
+    def self.create(cards)
+      if duplicate_cards_of_count(cards, 2).size == 1
+        return self.new(cards)
+      end
+      raise Game::InvalidHand 
+    end
+
     private
     def compare_same_rank(opponent)
-       my_pairs =  duplicate_cards_of_count
-       opponents_pairs = opponent.duplicate_cards_of_count 
+       my_pairs =  duplicate_cards_of_count(self.cards)
+       opponents_pairs = opponent.duplicate_cards_of_count(opponent.cards) 
        if my_pairs.first == opponents_pairs.first
          return wins_by_high_card?(opponent)
        end
@@ -110,8 +106,8 @@ module Game
 
     private
     def compare_same_rank(opponent)
-      my_pairs = duplicate_cards_of_count
-      opponents_pairs = opponent.duplicate_cards_of_count
+      my_pairs = duplicate_cards_of_count(cards)
+      opponents_pairs = duplicate_cards_of_count(opponent.cards)
       if my_pairs.first == opponents_pairs.first
         if my_pairs.last == opponents_pairs.last
           return wins_by_high_card?(opponent)
@@ -130,8 +126,8 @@ module Game
 
     private
     def compare_same_rank(opponent)
-      my_pairs = duplicate_cards_of_count(3)
-      opponents_pairs = opponent.duplicate_cards_of_count(3)
+      my_pairs = duplicate_cards_of_count(self.cards, 3)
+      opponents_pairs = duplicate_cards_of_count(opponent.cards, 3)
        if my_pairs.first == opponents_pairs.first
          return wins_by_high_card?(opponent)
        end
@@ -167,11 +163,11 @@ module Game
 
     private
     def compare_same_rank(opponent)
-      my_trips = duplicate_cards_of_count(3)
-      opponent_trips = opponent.duplicate_cards_of_count(3)
+      my_trips = duplicate_cards_of_count(self.cards, 3)
+      opponent_trips = duplicate_cards_of_count(opponent.cards, 3)
       if my_trips.first == opponent_trips.first 
-        my_pair = duplicate_cards_of_count
-        opponents_pair = opponent.duplicate_cards_of_count
+        my_pair = duplicate_cards_of_count(self.cards)
+        opponents_pair = duplicate_cards_of_count(opponent.cards)
         return my_pair.first > opponents_pair.first
       else
         return my_trips.first > opponent_trips.first
@@ -187,8 +183,8 @@ module Game
 
     private
     def compare_same_rank(opponent)
-      my_quads = duplicate_cards_of_count(4).first
-      opponent_quads = opponent.duplicate_cards_of_count(4).first
+      my_quads = duplicate_cards_of_count(self.cards, 4).first
+      opponent_quads = opponent.duplicate_cards_of_count(opponent.cards, 4).first
       if my_quads == opponent_quads 
         return wins_by_high_card?(opponent) 
       end
