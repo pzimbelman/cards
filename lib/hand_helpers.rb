@@ -10,5 +10,12 @@ module Game
       duplicate_cards_of_count.delete_if { |c| pairs[c.rank] > count }
       duplicate_cards_of_count
     end
+
+    def all_same_suit?(cards)
+      (cards.size - 2).times do |index|
+        return false if cards[index].suit != cards[index + 1].suit
+      end
+      return true
+    end
   end
 end
