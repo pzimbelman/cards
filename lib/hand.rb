@@ -9,7 +9,7 @@ module Game
   class Hand
     extend Game::HandHelpers
     include Game::HandHelpers
-    attr_reader :rank, :cards
+    attr_reader :rank, :cards, :card_info
 
     def self.create(cards)
       card_info = Game::CardInfo.info_for(cards)
@@ -99,14 +99,17 @@ module Game
       card_info.pairs && card_info.pairs.size == 1 && !card_info.trips
     end
 
+    protected
+    def pair
+      return card_info.pairs.first
+    end
+
     private
     def compare_same_rank(opponent)
-       my_pairs =  duplicate_cards_of_count(self.cards)
-       opponents_pairs = opponent.duplicate_cards_of_count(opponent.cards) 
-       if my_pairs.first == opponents_pairs.first
+       if self.pair == opponent.pair
          return wins_by_high_card?(opponent)
        end
-       return my_pairs.first > opponents_pairs.first
+       return self.pair > opponent.pair
     end
   end
 
@@ -121,17 +124,24 @@ module Game
       card_info.pairs && card_info.pairs.size == 2
     end
 
+    protected
+    def high_pair
+      card_info.pairs.first
+    end
+
+    def low_pair
+      card_info.pairs.last
+    end
+
     private
     def compare_same_rank(opponent)
-      my_pairs = duplicate_cards_of_count(cards)
-      opponents_pairs = duplicate_cards_of_count(opponent.cards)
-      if my_pairs.first == opponents_pairs.first
-        if my_pairs.last == opponents_pairs.last
+      if self.high_pair == opponent.high_pair
+        if self.low_pair == opponent.low_pair
           return wins_by_high_card?(opponent)
         end
-        return my_pairs.last > opponents_pairs.last
+        return self.low_pair > opponent.low_pair
       end
-      return my_pairs.first > opponents_pairs.first
+      return self.high_pair > opponent.high_pair
     end
   end
 
@@ -145,14 +155,17 @@ module Game
       card_info.trips && !card_info.pairs
     end
 
+    protected
+    def trips
+      card_info.trips.first
+    end
+
     private
     def compare_same_rank(opponent)
-      my_pairs = duplicate_cards_of_count(self.cards, 3)
-      opponents_pairs = duplicate_cards_of_count(opponent.cards, 3)
-       if my_pairs.first == opponents_pairs.first
+       if self.trips == opponent.trips
          return wins_by_high_card?(opponent)
        end
-      return my_pairs.first > opponents_pairs.first
+      return self.trips > opponent.trips
     end
   end
 
@@ -194,16 +207,21 @@ module Game
       card_info.trips && card_info.pairs
     end
 
+    protected
+    def trips
+      card_info.trips.first
+    end
+  
+    def pair
+      card_info.pairs.first
+    end
+
     private
     def compare_same_rank(opponent)
-      my_trips = duplicate_cards_of_count(self.cards, 3)
-      opponent_trips = duplicate_cards_of_count(opponent.cards, 3)
-      if my_trips.first == opponent_trips.first 
-        my_pair = duplicate_cards_of_count(self.cards)
-        opponents_pair = duplicate_cards_of_count(opponent.cards)
-        return my_pair.first > opponents_pair.first
+      if self.trips == opponent.trips 
+        return self.pair > opponent.pair
       else
-        return my_trips.first > opponent_trips.first
+        return self.trips > opponent.trips
       end
     end
   end
@@ -218,14 +236,17 @@ module Game
       card_info.quads 
     end
 
+    protected
+    def quads
+      card_info.quads.first
+    end
+
     private
     def compare_same_rank(opponent)
-      my_quads = duplicate_cards_of_count(self.cards, 4).first
-      opponent_quads = opponent.duplicate_cards_of_count(opponent.cards, 4).first
-      if my_quads == opponent_quads 
+      if self.quads == opponent.quads 
         return wins_by_high_card?(opponent) 
       end
-      return my_quads > opponent_quads
+      return self.quads > opponent.quads
     end
   end
 
