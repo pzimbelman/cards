@@ -14,7 +14,7 @@ module Game
     def self.create(cards)
       card_info = Game::CardInfo.info_for(cards)
       if valid?(card_info)
-        return self.new(cards)
+        return self.new(cards, card_info)
       end
       raise Game::InvalidHand 
     end
@@ -23,8 +23,9 @@ module Game
       false
     end
 
-    def initialize(cards)
+    def initialize(cards, card_info)
       @cards = cards.sort { |a,b| b <=> a }
+      @card_info = card_info
     end
 
     def high_card
@@ -72,7 +73,7 @@ module Game
   end
 
   class HighCard < Hand
-    def initialize(cards)
+    def initialize(cards, card_info)
       @rank = 0
       super
     end
@@ -89,7 +90,7 @@ module Game
   end
 
   class Pair < Hand
-    def initialize(cards)
+    def initialize(cards, card_info)
       @rank = 1
       super
     end
@@ -111,7 +112,7 @@ module Game
 
   class TwoPair < Hand
 
-    def initialize(cards)
+    def initialize(cards, card_info)
       @rank = 2
       super
     end
@@ -135,7 +136,7 @@ module Game
   end
 
   class ThreeOfAKind < Hand
-    def initialize(cards)
+    def initialize(cards, card_info)
       @rank = 3
       super
     end
@@ -157,7 +158,7 @@ module Game
 
   class Straight < Hand
     include Game::StraightComparisons
-    def initialize(cards)
+    def initialize(cards, card_info)
       @rank = 4
       super
     end
@@ -168,7 +169,7 @@ module Game
   end
 
   class Flush < Hand
-    def initialize(cards)
+    def initialize(cards, card_info)
       @rank = 5
       super
     end
@@ -184,7 +185,7 @@ module Game
 
   class FullHouse < Hand
 
-    def initialize(cards)
+    def initialize(cards, card_info)
       @rank = 6
       super
     end
@@ -208,7 +209,7 @@ module Game
   end
 
   class FourOfAKind < Hand
-    def initialize(cards)
+    def initialize(cards, card_info)
       @rank = 7
       super
     end
@@ -230,7 +231,7 @@ module Game
 
   class StraightFlush < Hand
     include Game::StraightComparisons
-    def initialize(cards)
+    def initialize(cards, card_info)
       @rank = 8
       super
     end
