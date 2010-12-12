@@ -161,6 +161,10 @@ module Game
       @rank = 4
       super
     end
+
+    def self.valid?(card_info)
+      card_info.straight? && !card_info.flush?
+    end
   end
 
   class Flush < Hand
@@ -170,7 +174,7 @@ module Game
     end
 
     def self.valid?(card_info)
-      card_info.flush?
+      card_info.flush? && !card_info.straight?
     end
 
     def compare_same_rank(opponent)
@@ -229,6 +233,10 @@ module Game
     def initialize(cards)
       @rank = 8
       super
+    end
+
+    def self.valid?(card_info)
+      card_info.flush? && card_info.straight?
     end
   end
 end

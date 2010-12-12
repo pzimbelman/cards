@@ -40,7 +40,7 @@ module TestHelper
 
   def straight_hand_from(*cards)
     cards = create_cards(*cards)
-    Game::Straight.new(cards)
+    Game::Straight.create(cards)
   end
 
   def flush_hand_from(*cards)
@@ -59,6 +59,6 @@ module TestHelper
   end
   def straight_flush_from(*cards)
     cards = create_cards(*cards)
-    Game::StraightFlush.new(cards)
+    Game::StraightFlush.create(cards)
   end
 end

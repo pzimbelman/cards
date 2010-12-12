@@ -8,13 +8,18 @@ module Game
   class CardInfo
     extend Game::HandHelpers
 
-    def initialize(groupings, is_flush)
+    def initialize(groupings, is_flush, is_straight)
       @groupings = groupings
       @is_flush = is_flush
+      @is_straight = is_straight
     end
 
     def flush?
       @is_flush
+    end
+
+    def straight?
+      @is_straight
     end
 
     def pairs
@@ -33,7 +38,8 @@ module Game
       raise TooManyCards unless cards.size == 5
       groupings = Groupings.create(cards)
       is_flush = all_same_suit?(cards)
-      self.new(groupings, is_flush) 
+      is_straight = is_a_straight?(cards)
+      self.new(groupings, is_flush, is_straight) 
     end
   end
 

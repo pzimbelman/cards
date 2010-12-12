@@ -52,4 +52,33 @@ class CardInfoTest < Test::Unit::TestCase
     info = Game::CardInfo.info_for(cards)
     assert info.flush?
   end
+
+  def test_should_not_be_a_flush
+    cards = create_cards("3 Spades", "2 Spades", "5 Spades",
+                                "A hearts", "K Spades")
+    info = Game::CardInfo.info_for(cards)
+    assert !info.flush?
+  end
+
+  def test_should_not_be_a_straight
+    cards = create_cards("10 Spades", "J Diamonds", "2 Spades",
+                                "9 hearts", "K Spades")
+    info = Game::CardInfo.info_for(cards)
+    assert !info.straight?
+  end
+
+  def test_should_be_a_straight
+    cards = create_cards("10 Spades", "J Diamonds", "Q Spades",
+                                "9 hearts", "K Spades")
+    info = Game::CardInfo.info_for(cards)
+    assert info.straight?
+  end
+
+  def test_ace_to_five_straight
+    cards = create_cards("2 Spades", "3 Diamonds", "4 Spades",
+                                "5 hearts", "A Spades")
+    info = Game::CardInfo.info_for(cards)
+    assert info.straight?
+  end
+
 end

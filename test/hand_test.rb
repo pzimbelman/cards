@@ -282,9 +282,18 @@ class HandTest < Test::Unit::TestCase
    assert second_hand > first_hand
   end
 
+  def test_should_error_for_invalid_straight_flush_hand
+   assert_invalid_hand_of_type(Game::StraightFlush, "7 Spades", "8 Spades",
+                               "9 Spades", "10 Hearts", "J Spades")
+   assert_invalid_hand_of_type(Game::StraightFlush, "7 Spades", "8 Spades",
+                               "9 Spades", "A Spades", "J Spades")
+  end
+
   def test_should_error_if_invalid_flush_hand
    assert_invalid_hand_of_type(Game::Flush, "7 Spades", "8 Spades",
                                "2 Diamonds", "Q Spades", "J Spades")
+   assert_invalid_hand_of_type(Game::Flush, "7 Spades", "8 Spades",
+                               "9 Spades", "10 Spades", "J Spades")
   end
 
   def test_should_error_if_invalid_four_of_a_kind_hand
@@ -297,6 +306,12 @@ class HandTest < Test::Unit::TestCase
                                "7 Diamonds", "Q Spades", "7 Clubs")
    assert_invalid_hand_of_type(Game::FullHouse, "2 Spades", "8 Spades",
                                "7 Diamonds", "Q Spades", "7 Clubs")
+  end
+  def test_should_error_if_invalid_straight_hand
+   assert_invalid_hand_of_type(Game::Straight, "7 Spades", "8 Diamonds",
+                               "2 Hearts", "10 Diamonds", "J Spades")
+   assert_invalid_hand_of_type(Game::Straight, "7 Hearts", "8 Hearts",
+                               "9 Hearts", "10 Hearts", "J Hearts")
   end
 
   def test_should_error_if_invalid_two_pair_hand
