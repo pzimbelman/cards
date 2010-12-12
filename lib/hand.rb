@@ -95,7 +95,7 @@ module Game
     end
 
     def self.valid?(card_info)
-      card_info.pairs && card_info.pairs.size == 1
+      card_info.pairs && card_info.pairs.size == 1 && !card_info.trips
     end
 
     private
@@ -116,6 +116,10 @@ module Game
       super
     end
 
+    def self.valid?(card_info)
+      card_info.pairs && card_info.pairs.size == 2
+    end
+
     private
     def compare_same_rank(opponent)
       my_pairs = duplicate_cards_of_count(cards)
@@ -134,6 +138,10 @@ module Game
     def initialize(cards)
       @rank = 3
       super
+    end
+
+    def self.valid?(card_info)
+      card_info.trips && !card_info.pairs
     end
 
     private
@@ -161,6 +169,10 @@ module Game
       super
     end
 
+    def self.valid?(card_info)
+      card_info.flush?
+    end
+
     def compare_same_rank(opponent)
       wins_by_high_card?(opponent) 
     end
@@ -171,6 +183,10 @@ module Game
     def initialize(cards)
       @rank = 6
       super
+    end
+
+    def self.valid?(card_info)
+      card_info.trips && card_info.pairs
     end
 
     private
@@ -191,6 +207,10 @@ module Game
     def initialize(cards)
       @rank = 7
       super
+    end
+
+    def self.valid?(card_info)
+      card_info.quads 
     end
 
     private

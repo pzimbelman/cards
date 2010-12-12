@@ -1,6 +1,10 @@
 require File.dirname(__FILE__) + '/hand_helpers.rb'
 
 module Game
+
+  class TooManyCards < ArgumentError 
+  end
+
   class CardInfo
     extend Game::HandHelpers
 
@@ -26,6 +30,7 @@ module Game
     end
 
     def self.info_for(cards)
+      raise TooManyCards unless cards.size == 5
       groupings = Groupings.create(cards)
       is_flush = all_same_suit?(cards)
       self.new(groupings, is_flush) 

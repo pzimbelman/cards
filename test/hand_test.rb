@@ -9,7 +9,7 @@ class HandTest < Test::Unit::TestCase
                            "7 Clubs", "J Spades") 
     @pair  = pair_hand_from("9 Spades", "9 Hearts", "5 Clubs",
                                 "A Diamonds", "K Diamonds")
-    @two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "6 Spades",
+    @two_pair = two_pair_hand_from("9 Spades", "9 Clubs", "Q Spades",
                                    "A Spades", "Q Hearts")
     @high_card = high_card_hand_from("3 Spades", "2 Hearts", "5 Clubs",
                                 "A Diamonds", "K Diamonds")
@@ -282,20 +282,46 @@ class HandTest < Test::Unit::TestCase
    assert second_hand > first_hand
   end
 
+  def test_should_error_if_invalid_flush_hand
+   assert_invalid_hand_of_type(Game::Flush, "7 Spades", "8 Spades",
+                               "2 Diamonds", "Q Spades", "J Spades")
+  end
+
+  def test_should_error_if_invalid_four_of_a_kind_hand
+   assert_invalid_hand_of_type(Game::FourOfAKind, "7 Spades", "8 Spades",
+                               "7 Diamonds", "Q Spades", "7 Clubs")
+  end
+
+  def test_should_error_if_invalid_full_house_hand
+   assert_invalid_hand_of_type(Game::FullHouse, "7 Spades", "8 Spades",
+                               "7 Diamonds", "Q Spades", "7 Clubs")
+   assert_invalid_hand_of_type(Game::FullHouse, "2 Spades", "8 Spades",
+                               "7 Diamonds", "Q Spades", "7 Clubs")
+  end
+
+  def test_should_error_if_invalid_two_pair_hand
+   assert_invalid_hand_of_type(Game::TwoPair, "7 Spades", "7 Diamonds",
+                               "10 Hearts", "Q Diamonds", "J Spades")
+  end
+
+
+  def test_should_error_if_invalid_three_of_a_kind
+   assert_invalid_hand_of_type(Game::ThreeOfAKind, "7 Spades", "7 Diamonds",
+                               "8 Hearts", "Q Diamonds", "K Spades")
+   assert_invalid_hand_of_type(Game::ThreeOfAKind, "7 Spades", "7 Diamonds",
+                               "7 Hearts", "Q Diamonds", "Q Spades")
+  end
+
   def test_should_give_error_if_not_a_valid_pair_hand
-    cards = create_cards("10 Spades", "3 Hearts", "4 Hearts", 
-                        "J Diamonds", "8 Spades")
-    assert_raise Game::InvalidHand do
-      Game::Pair.create(cards) 
-    end
+   assert_invalid_hand_of_type(Game::Pair, "5 Spades", "7 Diamonds",
+                               "10 Hearts", "Q Diamonds", "J Spades")
+   assert_invalid_hand_of_type(Game::Pair, "10 Spades", "10 Diamonds",
+                               "10 Hearts", "J Diamonds", "J Spades")
   end
 
   def test_cannot_create_base_hand
-    cards = create_cards("10 Spades", "3 Hearts", "4 Hearts", 
-                        "J Diamonds", "8 Spades")
-    assert_raise Game::InvalidHand do
-      Game::Hand.create(cards) 
-    end
+    assert_invalid_hand_of_type(Game::Hand, "10 Spades", "3 Hearts", 
+                          "4 Hearts", "J Diamonds", "8 Spades")
   end
 
   def test_high_card_cannot_beat_better_hands

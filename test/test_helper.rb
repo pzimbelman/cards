@@ -1,5 +1,13 @@
 require File.dirname(__FILE__) + '/../lib/card.rb'
 module TestHelper
+
+  def assert_invalid_hand_of_type(klass, *cards)
+    cards = create_cards(*cards)
+    assert_raise Game::InvalidHand do
+      klass.create(cards) 
+    end
+  end
+
   def create_cards(*cards)
     hand = []
     cards.each do |c| 
@@ -12,7 +20,7 @@ module TestHelper
 
   def two_pair_hand_from(*cards)
     cards = create_cards(*cards)
-    Game::TwoPair.new(cards)
+    Game::TwoPair.create(cards)
   end
 
   def high_card_hand_from(*cards)
@@ -27,7 +35,7 @@ module TestHelper
 
   def trip_hand_from(*cards)
     cards = create_cards(*cards)
-    Game::ThreeOfAKind.new(cards)
+    Game::ThreeOfAKind.create(cards)
   end
 
   def straight_hand_from(*cards)
@@ -37,17 +45,17 @@ module TestHelper
 
   def flush_hand_from(*cards)
     cards = create_cards(*cards)
-    Game::Flush.new(cards)
+    Game::Flush.create(cards)
   end
 
   def full_house_hand_from(*cards)
     cards = create_cards(*cards)
-    Game::FullHouse.new(cards)
+    Game::FullHouse.create(cards)
   end
 
   def quads_hand_from(*cards)
     cards = create_cards(*cards)
-    Game::FourOfAKind.new(cards)
+    Game::FourOfAKind.create(cards)
   end
   def straight_flush_from(*cards)
     cards = create_cards(*cards)

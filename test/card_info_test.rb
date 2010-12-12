@@ -5,6 +5,14 @@ require File.dirname(__FILE__) + '/../lib/card_info.rb'
 class CardInfoTest < Test::Unit::TestCase
   include TestHelper
 
+  def test_should_error_when_given_too_many_cards
+    cards = create_cards("3 Spades", "2 Hearts", "5 Clubs",
+                                "A Diamonds", "K Diamonds", "5 Hearts")
+    assert_raise Game::TooManyCards do
+      info = Game::CardInfo.info_for(cards)
+    end
+  end
+
   def test_should_have_no_pairs
     cards = create_cards("3 Spades", "2 Hearts", "5 Clubs",
                                 "A Diamonds", "K Diamonds")
