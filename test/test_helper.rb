@@ -10,4 +10,47 @@ module TestHelper
     return hand 
   end
 
+  def two_pair_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::TwoPair.new(cards)
+  end
+
+  def high_card_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::HighCard.create(cards)
+  end
+
+  def pair_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::Pair.create(cards)
+  end
+
+  def trip_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::ThreeOfAKind.new(cards)
+  end
+
+  def straight_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::Straight.new(cards)
+  end
+
+  def flush_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::Flush.new(cards)
+  end
+
+  def full_house_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::FullHouse.new(cards)
+  end
+
+  def quads_hand_from(*cards)
+    cards = create_cards(*cards)
+    Game::FourOfAKind.new(cards)
+  end
+  def straight_flush_from(*cards)
+    cards = create_cards(*cards)
+    Game::StraightFlush.new(cards)
+  end
 end

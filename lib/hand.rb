@@ -1,5 +1,6 @@
 require File.dirname(__FILE__) + '/straight_comparisons.rb'
 require File.dirname(__FILE__) + '/hand_helpers.rb'
+require File.dirname(__FILE__) + '/card_info.rb'
 
 module Game
   class InvalidHand < ArgumentError
@@ -9,6 +10,19 @@ module Game
     extend Game::HandHelpers
     include Game::HandHelpers
     attr_reader :rank, :cards
+
+    def self.create(cards)
+      card_info = Game::CardInfo.info_for(cards)
+      if valid?(card_info)
+        return self.new(cards)
+      end
+      raise Game::InvalidHand 
+    end
+    
+    def self.valid?(card_info)
+      false
+    end
+
     def initialize(cards)
       @cards = cards.sort { |a,b| b <=> a }
     end
@@ -63,13 +77,15 @@ module Game
       super
     end
 
+    def self.valid?(card_info)
+      true
+    end
+
+    private
     def compare_same_rank(opponent)
       wins_by_high_card?(opponent)
     end
 
-    def self.create(cards)
-      self.new(cards)
-    end
   end
 
   class Pair < Hand
@@ -78,11 +94,8 @@ module Game
       super
     end
 
-    def self.create(cards)
-      if duplicate_cards_of_count(cards, 2).size == 1
-        return self.new(cards)
-      end
-      raise Game::InvalidHand 
+    def self.valid?(card_info)
+      card_info.pairs && card_info.pairs.size == 1
     end
 
     private
@@ -94,7 +107,6 @@ module Game
        end
        return my_pairs.first > opponents_pairs.first
     end
-
   end
 
   class TwoPair < Hand

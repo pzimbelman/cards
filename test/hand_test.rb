@@ -290,48 +290,16 @@ class HandTest < Test::Unit::TestCase
     end
   end
 
+  def test_cannot_create_base_hand
+    cards = create_cards("10 Spades", "3 Hearts", "4 Hearts", 
+                        "J Diamonds", "8 Spades")
+    assert_raise Game::InvalidHand do
+      Game::Hand.create(cards) 
+    end
+  end
+
   def test_high_card_cannot_beat_better_hands
     assert !(@high_card > @pair)
-  end
-
-  def two_pair_hand_from(*cards)
-    cards = create_cards(*cards)
-    Game::TwoPair.new(cards)
-  end
-
-  def high_card_hand_from(*cards)
-    cards = create_cards(*cards)
-    Game::HighCard.create(cards)
-  end
-  def pair_hand_from(*cards)
-    cards = create_cards(*cards)
-    Game::Pair.create(cards)
-  end
-
-  def trip_hand_from(*cards)
-    cards = create_cards(*cards)
-    Game::ThreeOfAKind.new(cards)
-  end
-
-  def straight_hand_from(*cards)
-    cards = create_cards(*cards)
-    Game::Straight.new(cards)
-  end
-
-  def flush_hand_from(*cards)
-    cards = create_cards(*cards)
-    Game::Flush.new(cards)
-  end
-  def full_house_hand_from(*cards)
-    cards = create_cards(*cards)
-    Game::FullHouse.new(cards)
-  end
-  def quads_hand_from(*cards)
-    cards = create_cards(*cards)
-    Game::FourOfAKind.new(cards)
-  end
-  def straight_flush_from(*cards)
-    cards = create_cards(*cards)
-    Game::StraightFlush.new(cards)
+    assert !(@high_card > @straight)
   end
 end
