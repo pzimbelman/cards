@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/../lib/card.rb'
+require File.dirname(__FILE__) + '/../lib/cards_container.rb'
 module TestHelper
 
   def assert_invalid_hand_of_type(klass, *cards)
@@ -15,7 +16,7 @@ module TestHelper
        rank = rank.to_i if rank < "A"
        hand << Game::Card.new(rank, suit)
     end
-    return hand 
+    return Game::CardsContainer.create(hand) 
   end
 
   def two_pair_hand_from(*cards)

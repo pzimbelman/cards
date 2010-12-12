@@ -24,7 +24,7 @@ module Game
     end
 
     def initialize(cards, card_info)
-      @cards = cards.sort { |a,b| b <=> a }
+      @cards = cards
       @card_info = card_info
     end
 
