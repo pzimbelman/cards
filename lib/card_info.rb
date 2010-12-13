@@ -2,7 +2,7 @@ require File.dirname(__FILE__) + '/game_helpers.rb'
 
 module Game
 
-  class TooManyCards < ArgumentError 
+  class NotFiveCards < ArgumentError 
   end
 
   class CardInfo
@@ -35,7 +35,7 @@ module Game
     end
 
     def self.info_for(cards)
-      raise TooManyCards unless cards.size == 5
+      raise NotFiveCards unless cards.size == 5
       groupings = Groupings.create(cards)
       is_flush = all_same_suit?(cards)
       is_straight = is_a_straight?(cards)
