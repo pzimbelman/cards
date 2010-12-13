@@ -1,5 +1,5 @@
 module Game
-  module HandHelpers
+  module Helpers
     def all_same_suit?(cards)
       cards.suits.uniq.size == 1
     end
@@ -17,7 +17,11 @@ module Game
     end
 
     def in_order?(card, next_card)
-      (Game::RANKS.find_index(card.rank) - 1 ) == Game::RANKS.find_index(next_card.rank)
+      (rank_index_of(card) - 1 ) == rank_index_of(next_card)
+    end
+
+    def rank_index_of(card)
+      RANKS.find_index(card.rank)
     end
   end
 end

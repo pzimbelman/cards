@@ -1,5 +1,5 @@
 require File.dirname(__FILE__) + '/straight_comparisons.rb'
-require File.dirname(__FILE__) + '/hand_helpers.rb'
+require File.dirname(__FILE__) + '/game_helpers.rb'
 require File.dirname(__FILE__) + '/card_info.rb'
 
 module Game
@@ -7,8 +7,8 @@ module Game
   end
 
   class Hand
-    extend Game::HandHelpers
-    include Game::HandHelpers
+    extend Game::Helpers
+    include Game::Helpers
     attr_reader :rank, :cards, :card_info
 
     def self.create(cards)

@@ -1,4 +1,4 @@
-require File.dirname(__FILE__) + '/hand_helpers.rb'
+require File.dirname(__FILE__) + '/game_helpers.rb'
 
 module Game
 
@@ -6,7 +6,7 @@ module Game
   end
 
   class CardInfo
-    extend Game::HandHelpers
+    extend Game::Helpers
 
     def initialize(groupings, is_flush, is_straight)
       @groupings = groupings

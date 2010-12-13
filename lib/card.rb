@@ -1,7 +1,9 @@
 require File.dirname(__FILE__) + '/game_constants.rb'
+require File.dirname(__FILE__) + '/game_helpers.rb'
 
 module Game
   class Card
+    include Game::Helpers
     attr_reader :suit, :rank
     def initialize(rank, suit)
       @suit = suit
@@ -35,7 +37,7 @@ module Game
 
     protected
     def beats?(opponent)
-      RANKS.find_index(rank) > RANKS.find_index(opponent.rank)
+      rank_index_of(self) > rank_index_of(opponent)
     end
   end
 end 
