@@ -92,11 +92,9 @@ class HandFinderTest < Test::Unit::TestCase
   end
 
 
-  def test_should_error_when_given_fewer_than_five_cards
-    assert_raise Game::TooFewCards do
-      best_possible_hand_from("2 Spades", "2 Clubs", "A Spades", "3 Hearts")
-    end
-
+  def test_should_return_nil_when_fewer_than_5_cards
+    assert_nil best_possible_hand_from("2 Spades", "2 Clubs",
+                                        "A Spades", "3 Hearts")
   end
   def best_possible_hand_from(*cards)
     cards = create_cards(*cards)
