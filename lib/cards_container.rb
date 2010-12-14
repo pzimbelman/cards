@@ -6,6 +6,10 @@ module Game
       @cards = cards
     end
 
+    def combination(n)
+      cards.combination(n).map { |combo| self.class.new(combo) }
+    end
+
     def size
       cards.size
     end

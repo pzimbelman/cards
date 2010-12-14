@@ -3,8 +3,6 @@ require File.dirname(__FILE__) + '/game_helpers.rb'
 require File.dirname(__FILE__) + '/card_info.rb'
 
 module Game
-  class InvalidHand < ArgumentError
-  end
 
   class Hand
     extend Game::Helpers
@@ -27,6 +25,10 @@ module Game
       @card_info = card_info
     end
 
+    def ranks
+      cards.ranks
+    end
+
     def high_card
       @cards.first
     end
@@ -42,10 +44,10 @@ module Game
     def <=>(opponent)
       if self > opponent
         return 1
-      elsif self == opponent
-        return 0
+      elsif opponent > self
+        return -1
       end
-      return -1
+      return 0
     end
   
     protected
@@ -78,7 +80,8 @@ module Game
     end
 
     def self.valid?(card_info)
-      true
+      !(card_info.pairs || card_info.trips || card_info.quads ||
+           card_info.flush? || card_info.straight?)
     end
 
     private

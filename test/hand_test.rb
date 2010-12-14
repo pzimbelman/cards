@@ -48,6 +48,14 @@ class HandTest < Test::Unit::TestCase
     assert @straight_flush > @four_of_a_kind
   end
 
+  def test_straight_comparisons_with_spaceship
+    losing_straight = straight_hand_from("8 Spades", "9 Hearts", "10 Clubs",
+                                         "J Spades", "Q Spades")
+    better_straight = straight_hand_from("K Spades", "9 Hearts", "10 Clubs",
+                                         "J Spades", "Q Spades")
+    assert_equal -1, losing_straight <=> better_straight
+  end
+
   def test_should_implement_spaceship_operator
     assert_equal 0, @trips <=> @trips
     assert_equal -1, @pair <=> @flush
@@ -332,6 +340,19 @@ class HandTest < Test::Unit::TestCase
                                "10 Hearts", "Q Diamonds", "J Spades")
    assert_invalid_hand_of_type(Game::Pair, "10 Spades", "10 Diamonds",
                                "10 Hearts", "J Diamonds", "J Spades")
+  end
+
+  def test_should_not_be_valid_for_high_card_hands
+   assert_invalid_hand_of_type(Game::HighCard, "Q Spades", "7 Diamonds",
+                               "10 Hearts", "Q Diamonds", "J Spades")
+   assert_invalid_hand_of_type(Game::HighCard, "Q Spades", "7 Diamonds",
+                               "Q Hearts", "Q Diamonds", "J Spades")
+   assert_invalid_hand_of_type(Game::HighCard, "Q Spades", "7 Diamonds",
+                               "Q Hearts", "Q Diamonds", "Q Clubs")
+   assert_invalid_hand_of_type(Game::HighCard, "J Spades", "7 Spades",
+                               "A Spades", "2 Spades", "8 Spades")
+   assert_invalid_hand_of_type(Game::HighCard, "J Spades", "7 Spades",
+                               "9 Clubs", "10 Spades", "8 Spades")
   end
 
   def test_cannot_create_base_hand

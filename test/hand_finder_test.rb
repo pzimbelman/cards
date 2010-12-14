@@ -59,8 +59,47 @@ class HandFinderTest < Test::Unit::TestCase
     assert_equal Game::StraightFlush, hand.class
   end
 
+  def test_should_get_best_straight_from_more_than_5_cards
+    hand = best_possible_hand_from("7 Diamonds", "8 Spades", "10 Clubs",
+                                   "J Spades", "9 Spades", "Q Hearts", 
+                                   "K Spades")
+    assert_equal Game::Straight, hand.class
+    assert_equal ["K", "Q", "J", 10, 9], hand.ranks
+  end
+
+  def test_should_get_best_flush_from_more_than_5_cards
+    hand = best_possible_hand_from("2 Spades", "3 Spades", "10 Spades",
+                                   "J Spades", "9 Spades", "Q Spades", 
+                                   "A Diamonds")
+    assert_equal Game::Flush, hand.class
+    assert_equal ["Q", "J", 10, 9, 3], hand.ranks
+  end
+
+  def test_should_get_best_full_house_from_more_than_5_cards
+    hand = best_possible_hand_from("2 Spades", "2 Clubs", "A Spades",
+                                   "J Spades", "A Diamonds", "2 Hearts", 
+                                   "A Clubs")
+    assert_equal Game::FullHouse, hand.class
+    assert_equal ["A", "A", "A", 2, 2], hand.ranks
+  end
+
+  def test_should_get_four_of_a_kind_from_more_than_5_cards
+    hand = best_possible_hand_from("2 Spades", "2 Clubs", "A Spades",
+                                   "A Hearts", "2 Diamonds", "2 Hearts", 
+                                   "A Clubs")
+    assert_equal Game::FourOfAKind, hand.class
+    assert_equal ["A", 2, 2, 2, 2], hand.ranks
+  end
+
+
+  def test_should_error_when_given_fewer_than_five_cards
+    assert_raise Game::TooFewCards do
+      best_possible_hand_from("2 Spades", "2 Clubs", "A Spades", "3 Hearts")
+    end
+
+  end
   def best_possible_hand_from(*cards)
     cards = create_cards(*cards)
-    Game::HandFinder.best_possible_from(cards)
+    Game::HandFinder.best_possible_hand_from(cards)
   end
 end
