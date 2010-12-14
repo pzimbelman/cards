@@ -3,7 +3,7 @@ require File.dirname(__FILE__) + '/game_helpers.rb'
 
 module Game
   class Card
-    include Game::Helpers
+    include CardHelpers
     attr_reader :suit, :rank
     def initialize(rank, suit)
       @suit = suit

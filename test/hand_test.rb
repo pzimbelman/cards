@@ -356,8 +356,11 @@ class HandTest < Test::Unit::TestCase
   end
 
   def test_cannot_create_base_hand
-    assert_invalid_hand_of_type(Game::Hand, "10 Spades", "3 Hearts", 
+    assert_raise NoMethodError do 
+     cards = create_cards("10 Spades", "3 Hearts", 
                           "4 Hearts", "J Diamonds", "8 Spades")
+     Game::Hand.create(cards)
+    end
   end
 
   def test_high_card_cannot_beat_better_hands

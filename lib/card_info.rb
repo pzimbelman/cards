@@ -6,7 +6,9 @@ module Game
   end
 
   class CardInfo
-    extend Game::Helpers
+    extend StraightHelpers
+    extend FlushHelpers
+    extend CardHelpers
 
     def initialize(groupings, is_flush, is_straight)
       @groupings = groupings

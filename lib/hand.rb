@@ -1,12 +1,8 @@
 require File.dirname(__FILE__) + '/straight_comparisons.rb'
-require File.dirname(__FILE__) + '/game_helpers.rb'
 require File.dirname(__FILE__) + '/card_info.rb'
 
 module Game
-
   class Hand
-    extend Game::Helpers
-    include Game::Helpers
     attr_reader :rank, :cards, :card_info
 
     def self.create(cards)
@@ -14,10 +10,6 @@ module Game
       if valid?(card_info)
         return self.new(cards, card_info)
       end
-    end
-    
-    def self.valid?(card_info)
-      false
     end
 
     def initialize(cards, card_info)

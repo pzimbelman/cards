@@ -1,5 +1,7 @@
+require File.dirname(__FILE__) + '/game_helpers.rb'
 module Game
   module StraightComparisons
+    include StraightHelpers
 
     private
     def compare_same_rank(opponent)
