@@ -4,9 +4,7 @@ module TestHelper
 
   def assert_invalid_hand_of_type(klass, *cards)
     cards = create_cards(*cards)
-    assert_raise Game::InvalidHand do
-      klass.create(cards) 
-    end
+    assert_nil klass.create(cards) 
   end
 
   def create_cards(*cards)

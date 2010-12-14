@@ -16,7 +16,6 @@ module Game
       if valid?(card_info)
         return self.new(cards, card_info)
       end
-      raise Game::InvalidHand 
     end
     
     def self.valid?(card_info)

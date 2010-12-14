@@ -76,6 +76,9 @@ class CardInfoTest < Test::Unit::TestCase
     info = card_info_for("10 Spades", "J Diamonds", "2 Spades",
                                 "9 hearts", "K Spades")
     assert !info.straight?
+    info = card_info_for("7 Spades", "8 Spades", "2 Spades",
+                                   "10 Spades", "9 Spades")
+    assert !info.straight?
   end
 
   def test_should_be_a_straight
