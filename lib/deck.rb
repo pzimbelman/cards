@@ -2,13 +2,11 @@ require File.dirname(__FILE__) + '/game_constants.rb'
 require File.dirname(__FILE__) + '/card.rb'
 
 module Game
-  class EmptyDeck < RuntimeError
-  end
+  EmptyDeck = Class.new(RuntimeError) 
 
   class Deck
     def initialize
-      @cards = {}
-      create_cards
+      @cards = create_cards
     end
 
     def next_card
@@ -23,7 +21,7 @@ module Game
     end
 
     def card_count
-      @cards.values.size
+      @cards.size
     end
 
     def remaining_cards
@@ -32,12 +30,14 @@ module Game
 
     private
     def create_cards
+      cards = {}
       RANKS.each do |rank|
         SUITS.each do |suit|
           card = Card.new(rank, suit)
-          @cards[card.to_s] = card
+          cards[card.to_s] = card
         end
       end
+      cards
     end
   end
 end

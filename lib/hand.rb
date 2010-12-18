@@ -33,6 +33,7 @@ module Game
       self.rank == opponent.rank
     end
 
+
     def <=>(opponent)
       if self > opponent
         return 1

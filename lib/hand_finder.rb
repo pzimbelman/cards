@@ -18,9 +18,8 @@ module Game
 
       def find_hand_for(cards)
         HANDS_WORST_TO_BEST.each do |hand_class|
-          if hand = hand_class.create(cards)
-            return hand
-          end
+          hand = hand_class.create(cards)
+          break hand if hand
         end
       end
 

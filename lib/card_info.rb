@@ -2,8 +2,7 @@ require File.dirname(__FILE__) + '/game_helpers.rb'
 
 module Game
 
-  class NotFiveCards < ArgumentError 
-  end
+  NotFiveCards = Class.new(ArgumentError)
 
   class CardInfo
     extend StraightHelpers
@@ -38,29 +37,24 @@ module Game
 
     def self.info_for(cards)
       raise NotFiveCards unless cards.size == 5
-      groupings = Groupings.create(cards)
+      groupings = Groupings.new(cards)
       is_flush = all_same_suit?(cards)
       is_straight = is_a_straight?(cards)
       self.new(groupings, is_flush, is_straight) 
     end
   end
 
+  Grouping = Array
+  CardCountHash = Hash
+
   class Groupings
-    def self.create(cards)
-      groupings = self.new
-      counts = Hash.new(0)
+    def initialize(cards)
+      @groupings = (0..4).map { Grouping.new }
+      counts = CardCountHash.new(0)
       cards.each do |card|
         counts[card.rank] += 1
-        groupings.add(card, counts[card.rank])
-        groupings.delete(card, counts[card.rank] - 1)
-      end
-      groupings
-    end
-
-    def initialize
-      @groupings = []
-      (0..4).each do |index|
-        @groupings[index] = []
+        add(card, counts[card.rank])
+        delete(card, counts[card.rank] - 1)
       end
     end
 

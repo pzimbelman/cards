@@ -27,11 +27,11 @@ module Game
     end
 
     def ranks
-      cards.map { |card| card.rank }
+      cards.map(&:rank)
     end
 
     def suits
-      cards.map { |card| card.suit }
+      cards.map(&:suit)
     end
 
     def self.create(cards)
