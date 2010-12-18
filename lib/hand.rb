@@ -3,6 +3,7 @@ require File.dirname(__FILE__) + '/card_info.rb'
 
 module Game
   class Hand
+    include Comparable
     attr_reader :rank, :cards, :card_info
 
     def self.create(cards)
@@ -25,27 +26,21 @@ module Game
       @cards.first
     end
 
-    def >(opponent)
-      determine_winner(opponent) { compare_same_rank(opponent) }
-    end
-
-    def ==(opponent)
-      self.rank == opponent.rank
-    end
-
-
-    def <=>(opponent)
-      if self > opponent
-        return 1
-      elsif opponent > self
-        return -1
-      end
-      return 0
-    end
+   def <=>(opponent)
+     if self.beats?(opponent)
+       return 1
+     elsif opponent.beats?(self)
+       return -1
+     end
+     return 0
+   end
   
     protected
     def beats?(opponent)
-      self.rank > opponent.rank 
+      if self.rank == opponent.rank
+        return compare_same_rank(opponent)
+      end
+      self.rank > opponent.rank
     end
 
     def wins_by_high_card?(opponent)
@@ -55,14 +50,6 @@ module Game
         end
       end
       false
-    end
-
-    private
-    def determine_winner(opponent)
-      if self == opponent
-        return yield 
-      end
-      self.beats?(opponent)
     end
   end
 
