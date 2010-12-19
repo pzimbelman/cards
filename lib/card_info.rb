@@ -24,15 +24,15 @@ module Game
     end
 
     def pairs
-      @groupings[2]
+      @groupings.groups_of(2)
     end
 
     def trips 
-      @groupings[3]
+      @groupings.groups_of(3)
     end
 
     def quads
-      @groupings[4]
+      @groupings.groups_of(4)
     end
 
     def self.info_for(cards)
@@ -58,10 +58,6 @@ module Game
       end
     end
 
-    def [](index)
-      @groupings[index].empty? ? nil : @groupings[index]
-    end
-
     def add(card, index)
       @groupings[index] << card
       @groupings[index].sort { |a,b| b <=> a }
@@ -69,6 +65,10 @@ module Game
 
     def delete(card, index)
       @groupings[index].delete_if { |c| c.rank == card.rank }
+    end
+
+    def groups_of(count)
+      @groupings[count].empty? ? nil : @groupings[count]
     end
   end
 end
