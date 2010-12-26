@@ -14,7 +14,7 @@ module TestHelper
        rank = rank.to_i if rank < "A"
        hand << Game::Card.new(rank, suit)
     end
-    return Game::CardsContainer.create(hand) 
+    return Game::CardsContainer.new(hand) 
   end
 
   def two_pair_hand_from(*cards)

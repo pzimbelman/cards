@@ -22,7 +22,13 @@ class CardsContainerTest < Test::Unit::TestCase
     container = create_cards("3 Spades", "9 Clubs", "6 Spades",
                                    "A Spades", "2 Hearts")
     assert_equal ["A",9,6,3,2], container.ranks
-    assert_equal "A", container.first.rank
+    assert_equal "A", container.cards.first.rank
+  end
+
+  def test_container_high_card
+    container = create_cards("3 Spades", "9 Clubs", "6 Spades",
+                                   "K Spades", "2 Hearts")
+    assert_equal "K", container.high_card.rank
   end
 
   def test_should_return_suits

@@ -23,11 +23,11 @@ module Game
     end
 
     def high_card
-      @cards.first
+      cards.high_card
     end
 
    def <=>(opponent)
-     if self.beats?(opponent)
+     if beats?(opponent)
        return 1
      elsif opponent.beats?(self)
        return -1
@@ -37,12 +37,13 @@ module Game
   
     protected
     def beats?(opponent)
-      if self.rank == opponent.rank
+      if rank == opponent.rank
         return compare_same_rank(opponent)
       end
-      self.rank > opponent.rank
+      rank > opponent.rank
     end
 
+    private
     def wins_by_high_card?(opponent)
       @cards.size.times do |index|
         if @cards[index] != opponent.cards[index]
@@ -68,7 +69,6 @@ module Game
     def compare_same_rank(opponent)
       wins_by_high_card?(opponent)
     end
-
   end
 
   class Pair < Hand

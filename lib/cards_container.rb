@@ -3,18 +3,19 @@ module Game
   class CardsContainer
     attr_reader :cards
     def initialize(cards)
+      cards.sort! { |a,b| b <=> a }
       @cards = cards
     end
 
-    def combination(n)
-      cards.combination(n).map { |combo| self.class.new(combo) }
+    def five_card_combos 
+      cards.combination(5).map { |combo| self.class.new(combo) }
     end
 
     def size
       cards.size
     end
 
-    def first
+    def high_card
       cards.first
     end
 
@@ -32,11 +33,6 @@ module Game
 
     def suits
       cards.map(&:suit)
-    end
-
-    def self.create(cards)
-      cards.sort! { |a,b| b <=> a }
-      self.new(cards)
     end
   end
 end
