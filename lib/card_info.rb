@@ -1,4 +1,5 @@
 require File.dirname(__FILE__) + '/game_helpers.rb'
+require File.dirname(__FILE__) + '/cards_container.rb'
 
 module Game
 
@@ -56,7 +57,7 @@ module Game
     end
   end
 
-  Grouping = Array
+  Grouping = CardsContainer
   CardCountHash = Hash
 
   class Groupings
@@ -76,7 +77,6 @@ module Game
     private
     def add(card, index)
       @groupings[index] << card
-      @groupings[index].sort { |a,b| b <=> a }
       @groupings[index - 1].delete_if { |c| c.rank == card.rank }
     end
   end

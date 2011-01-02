@@ -38,4 +38,13 @@ class CardsContainerTest < Test::Unit::TestCase
                   container.suits
 
   end
+
+  def test_should_keep_cards_in_order_after_appending
+    container = create_cards("2 Spades", "9 Clubs", "6 Spades",
+                                   "3 Spades")
+    ace = Game::Card.new("A", "Clubs")
+    assert_equal "9 Clubs", container.high_card.to_s
+    container << ace
+    assert_equal "A Clubs", container.high_card.to_s
+  end
 end
