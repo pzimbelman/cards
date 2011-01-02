@@ -27,27 +27,22 @@ module Game
     end
 
    def <=>(opponent)
-     if beats?(opponent)
-       return 1
-     elsif opponent.beats?(self)
-       return -1
-     end
-     return 0
+     return  1 if beats?(opponent)
+     return -1 if opponent.beats?(self)
+     0
    end
   
     protected
     def beats?(opponent)
-      if rank == opponent.rank
-        return compare_same_rank(opponent)
-      end
+      return compare_same_rank(opponent) if rank == opponent.rank
       rank > opponent.rank
     end
 
     private
     def wins_by_high_card?(opponent)
-      @cards.size.times do |index|
-        if @cards[index] != opponent.cards[index]
-          return @cards[index] > opponent.cards[index]
+      cards.size.times do |index|
+        if cards[index] != opponent.cards[index]
+          return cards[index] > opponent.cards[index]
         end
       end
       false
