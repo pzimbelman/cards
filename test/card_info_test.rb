@@ -24,18 +24,25 @@ class CardInfoTest < Test::Unit::TestCase
     assert_nil info.pairs
   end
 
+  def test_high_and_low_pairs_should_be_same_with_single_pair
+    info = card_info_for("3 Spades", "5 Hearts", "5 Clubs",
+                                "A Diamonds", "K Diamonds")
+    assert_equal 5, info.high_pair.rank
+    assert_equal 5, info.low_pair.rank
+  end
+
   def test_should_have_two_pairs
     info = card_info_for("3 Spades", "A Hearts", "5 Clubs",
                                 "A Diamonds", "3 Diamonds")
-    assert_equal 2, info.pairs.size
-    assert_equal "A", info.pairs.first.rank
-    assert_equal 3, info.pairs.last.rank
+    assert_equal 2, info.pair_count
+    assert_equal "A", info.high_pair.rank
+    assert_equal 3, info.low_pair.rank
   end
 
   def test_should_have_trips_and_pair
     info = card_info_for("3 Spades", "A Hearts", "A Clubs",
                                 "A Diamonds", "3 Diamonds")
-    assert_equal 1, info.pairs.size
+    assert_equal 1, info.pair_count
     assert_equal 1, info.trips.size
     assert_equal "A", info.trips.first.rank
   end
@@ -97,5 +104,4 @@ class CardInfoTest < Test::Unit::TestCase
     cards = create_cards(*cards)
     Game::CardInfo.info_for(cards)
   end
-
 end

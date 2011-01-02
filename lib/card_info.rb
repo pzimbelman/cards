@@ -27,6 +27,18 @@ module Game
       @groupings.groups_of(2)
     end
 
+    def high_pair
+      pairs.first
+    end
+
+    def low_pair
+      pairs.last
+    end
+
+    def pair_count
+      pairs.size
+    end
+
     def trips 
       @groupings.groups_of(3)
     end
@@ -54,21 +66,18 @@ module Game
       cards.each do |card|
         counts[card.rank] += 1
         add(card, counts[card.rank])
-        delete(card, counts[card.rank] - 1)
       end
-    end
-
-    def add(card, index)
-      @groupings[index] << card
-      @groupings[index].sort { |a,b| b <=> a }
-    end
-
-    def delete(card, index)
-      @groupings[index].delete_if { |c| c.rank == card.rank }
     end
 
     def groups_of(count)
       @groupings[count].empty? ? nil : @groupings[count]
+    end
+    
+    private
+    def add(card, index)
+      @groupings[index] << card
+      @groupings[index].sort { |a,b| b <=> a }
+      @groupings[index - 1].delete_if { |c| c.rank == card.rank }
     end
   end
 end

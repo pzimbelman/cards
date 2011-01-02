@@ -38,6 +38,14 @@ module Game
       rank > opponent.rank
     end
 
+    def high_pair
+      card_info.high_pair
+    end
+
+    def low_pair
+      card_info.low_pair
+    end
+
     private
     def wins_by_high_card?(opponent)
       cards.size.times do |index|
@@ -73,20 +81,15 @@ module Game
     end
 
     def self.valid?(card_info)
-      card_info.pairs && card_info.pairs.size == 1 && !card_info.trips
-    end
-
-    protected
-    def pair
-      return card_info.pairs.first
+      card_info.pairs && card_info.pair_count == 1 && !card_info.trips
     end
 
     private
     def compare_same_rank(opponent)
-       if self.pair == opponent.pair
+       if high_pair == opponent.high_pair
          return wins_by_high_card?(opponent)
        end
-       return self.pair > opponent.pair
+       return high_pair > opponent.high_pair
     end
   end
 
@@ -98,27 +101,19 @@ module Game
     end
 
     def self.valid?(card_info)
-      card_info.pairs && card_info.pairs.size == 2
+      card_info.pairs && card_info.pair_count == 2
     end
 
-    protected
-    def high_pair
-      card_info.pairs.first
-    end
-
-    def low_pair
-      card_info.pairs.last
-    end
 
     private
     def compare_same_rank(opponent)
-      if self.high_pair == opponent.high_pair
-        if self.low_pair == opponent.low_pair
+      if high_pair == opponent.high_pair
+        if low_pair == opponent.low_pair
           return wins_by_high_card?(opponent)
         end
-        return self.low_pair > opponent.low_pair
+        return low_pair > opponent.low_pair
       end
-      return self.high_pair > opponent.high_pair
+      return high_pair > opponent.high_pair
     end
   end
 
@@ -139,10 +134,10 @@ module Game
 
     private
     def compare_same_rank(opponent)
-       if self.trips == opponent.trips
+       if trips == opponent.trips
          return wins_by_high_card?(opponent)
        end
-      return self.trips > opponent.trips
+      return trips > opponent.trips
     end
   end
 
@@ -189,16 +184,13 @@ module Game
       card_info.trips.first
     end
   
-    def pair
-      card_info.pairs.first
-    end
 
     private
     def compare_same_rank(opponent)
-      if self.trips == opponent.trips 
-        return self.pair > opponent.pair
+      if trips == opponent.trips 
+        return high_pair > opponent.high_pair
       else
-        return self.trips > opponent.trips
+        return trips > opponent.trips
       end
     end
   end
