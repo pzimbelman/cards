@@ -8,13 +8,10 @@ module Game
                             Game::FourOfAKind, Game::StraightFlush ]
     class << self
       def best_possible_hand_from(cards)
-        best_of(possible_hands_from(cards))
+        possible_hands_from(cards).max
       end
 
       private
-      def best_of(hands)
-        hands.sort! { |a,b| b <=> a }.first
-      end
 
       def find_hand_for(cards)
         HANDS_WORST_TO_BEST.each do |hand_class|
