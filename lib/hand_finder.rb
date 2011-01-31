@@ -21,11 +21,9 @@ module Game
       end
 
       def possible_hands_from(cards)
-        possible_hands = []
-        cards.five_card_combos.each do |five_card_combo|
-          possible_hands << find_hand_for(five_card_combo)
+        cards.five_card_combos.map do |five_card_combo|
+          find_hand_for(five_card_combo)
         end
-        possible_hands
       end
     end
   end
